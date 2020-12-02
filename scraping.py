@@ -37,7 +37,7 @@ img_url_rel = img_soup.select_one('figure.lede a img').get("src")
 img_url = f'https://www.jpl.nasa.gov{img_url_rel}'
 
 df = pd.read_html('http://space-facts.com/mars/')[0]
-df.columns=['description', 'value']
+df.columns = ['description', 'value']
 df.set_index('description', inplace=True)
 
 df.to_html()
