@@ -68,6 +68,31 @@ def mars_facts():
     return df.to_html()
 
 
+def hemi_img(browser):
+    # 1. Use browser to visit the URL
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.get(url)
+
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+    hemi_names = ['[alt="Cerberus Hemisphere Enhanced thumbnail"]',
+                  '[alt="Schiaparelli Hemisphere Enhanced thumbnail"]',
+                  '[alt="Syrtis Major Hemisphere Enhanced thumbnail"]',
+                  '[alt="Valles Marineris Hemisphere Enhanced thumbnail"]']
+
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    for i in range(0, len(hemi_names)):
+        browser.find_element_by_tag_name(hemi_names[i]).click()
+        hemisphere_image_urls.append(browser.find_element_by_link_text('Sample').get_attribute('href'))
+        browser.get(url)
+
+    # 4. Print the list that holds the dictionary of each image url and title.
+    for i in range(0, len(hemisphere_image_urls)):
+        hemisphere_image_urls[i] = {'img_url': hemisphere_image_urls[i], 'title': hemi_names[i][6:-2]}
+
+    return hemisphere_image_urls
+
+
 def scrape_all():
     # Initiate headless driver for deployment
     browser = wd.Chrome()
@@ -80,7 +105,8 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "last_modified": dt.now()
+        "last_modified": dt.now(),
+        "hemispheres": hemi_img(browser)
     }
 
     # Stop webdriver and return data
